@@ -31,19 +31,22 @@ ext.dependencies = "required-after:forge@[${config.forge_version_minDep},${confi
 ext.fullVersion = project.config.minecraft_version + '-' + project.version
 
 minecraft {
-    version = "${config.minecraft_version}-${config.forge_version}"
+    version = "${config.forge_version}"
 
-    def runDir = file("${rootProject.projectDir}/runs/run-${config.minecraft_version}")
-
-    if (!runDir.exists()) {
-        runDir = file("run-${config.minecraft_version}")
-    }
+	if (file("../../run/run-${config.minecraft_version}").exists()) {
+		runDir = "../../run/run-${config.minecraft_version}"
+	} else {
+		runDir = "run"
+	}
 
     mappings = "${config.minecraft_mappings}"
-    makeObfSourceJar = false
+    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+sourceCompatibility = targetCompatibility = "1.8"
+compileJava {
+    sourceCompatibility = targetCompatibility = "1.8"
+}
 
 configurations {
     deployerJars
@@ -52,42 +55,46 @@ configurations {
 repositories {
 
     maven {
+        name "zerocore"
+        url "https://maven.zerono.it/"
+    }
+
+    maven {
         name "Tesla (backup)"
-        url 'http://mmdmaven.blamejared.com'
+        url "https://mmdmaven.blamejared.com"
     }
 
     maven {
         name = "OpenComputers"
-        url = "http://maven.cil.li/"
+        url = "https://maven.cil.li/"
     }
 
     maven {
         name = "ComputerCraft"
-        url "http://cc.crzd.me/maven/"
+        url "https://cc.crzd.me/maven/"
     }
 
     maven {
         name "Patchouli"
-        url 'https://maven.blamejared.com'
+        url "https://maven.blamejared.com"
     }
 
     maven {
-        // JEI
+        // location of the maven that hosts JEI files
         name = "Progwml6 maven"
-        url = "https://dvs1.progwml6.com/files/maven/"
+        url = "https://dvs1.progwml6.com/files/maven"
     }
-
     maven {
-        // JEI mirror
+        // location of a maven mirror for JEI files, as a fallback
         name = "ModMaven"
-        url = "https://modmaven.k-4u.nl"
+        url = "modmaven.k-4u.nl"
     }
 }
 
 dependencies {
 
-    compile project(':ZeroCore-1.12')
-
+    compile group: "it.zerono.mods.zerocore", name: "zerocore", version: "${config.zerocore_version}"
+	
     deobfCompile group: "li.cil.oc", name: "OpenComputers", version: "${config.opencomputers_version}"
     compile "net.darkhax.tesla:Tesla-1.12.2:${config.tesla_version}"
     compile group: "dan200.computercraft", name: "ComputerCraft", version: "${config.computercraft_version}"
