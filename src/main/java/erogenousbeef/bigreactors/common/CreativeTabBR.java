@@ -65,7 +65,7 @@ public class CreativeTabBR extends CreativeTabs {
 		this.addToDisplayList(list, BrBlocks.blockBlutonium);
 		this.addToDisplayList(list, BrBlocks.blockLudicrite);
 		this.addToDisplayList(list, BrBlocks.blockSteel);
-
+		this.addToDisplayList(list, BrBlocks.blockCorium);
 		this.addToDisplayList(list, BrItems.wrench);
 
 		// Reactor parts

@@ -8,6 +8,10 @@
     "cyanite": {
       "model": "forge:fluid",
       "custom": { "fluid": "cyanite" }
+    },
+    "corium": {
+      "model": "forge:fluid",
+      "custom": { "fluid": "corium" }
     }
   }
 }

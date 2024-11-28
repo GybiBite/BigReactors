@@ -37,6 +37,11 @@
                 "textures":{
 					"all":"bigreactors:blocks/blocksteel"
                 }
+            },
+            "corium":{  
+                "textures":{
+					"all":"bigreactors:blocks/blockcorium"
+                }
             }				
         },
         "inventory":{  

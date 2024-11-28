@@ -17,11 +17,13 @@ fluid.tile.blutonium=Fluid Blutonium
 fluid.steam=Steam
 fluid.yellorium=Fluid Yellorium
 fluid.cyanite=Fluid Cyanite
+fluid.corium=Fluid Corium
 
 # Placeable Fluids
 tile.fluid.yellorium.still.name=Fluid Yellorium
 tile.fluid.cyanite.still.name=Fluid Cyanite
 tile.fluid.blutonium.still.name=Fluid Blutonium
+tile.fluid.corium.still.name=Fluid Corium
 
 # Items - ingots
 item.bigreactors:ingotyellorium.name=Yellorium Ingot
@@ -61,6 +63,7 @@ tile.bigreactors:blockblutonium.name=Blutonium Block
 tile.bigreactors:blockgraphite.name=Graphite Block
 tile.bigreactors:blockludicrite.name=Ludicrite Block
 tile.bigreactors:blocksteel.name=Steel Block
+tile.bigreactors:blockcorium.name=Corium Block
 
 # Blocks - ores
 tile.bigreactors:oreyellorite.name=Yellorite Ore
@@ -193,6 +196,7 @@ config.bigreactors.general.ticksPerRedstoneUpdate=Ticks per redstone update
 config.bigreactors.reactor.maxReactorHeight=Max height (Y)
 config.bigreactors.reactor.maxReactorSize=Max size (X/Z)
 config.bigreactors.reactor.reactorPowerProductionMultiplier=Power production multiplier
+config.bigreactors.reactor.doReactorMeltdown=Determines if reactors meltdown
 
 config.bigreactors.turbine.maxTurbineHeight=Max height (Y)
 config.bigreactors.turbine.maxTurbineSize=Max size (X/Z)

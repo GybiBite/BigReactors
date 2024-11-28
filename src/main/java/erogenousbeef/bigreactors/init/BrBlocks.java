@@ -1,6 +1,7 @@
 package erogenousbeef.bigreactors.init;
 
 import erogenousbeef.bigreactors.common.BigReactors;
+import erogenousbeef.bigreactors.common.block.BlockBRFluidCorium;
 import erogenousbeef.bigreactors.common.block.BlockBRGenericFluid;
 import erogenousbeef.bigreactors.common.block.BlockBRMetal;
 import erogenousbeef.bigreactors.common.block.BlockBROre;
@@ -40,6 +41,9 @@ public final class BrBlocks {
 
     @GameRegistry.ObjectHolder("blocksteel")
     public static final BlockBRMetal blockSteel = null;
+    
+    @GameRegistry.ObjectHolder("blockcorium")
+    public static final BlockBRMetal blockCorium = null;
 
     // Reactor parts
 
@@ -127,4 +131,7 @@ public final class BrBlocks {
 
     @GameRegistry.ObjectHolder("cyanite")
     public static final BlockBRGenericFluid cyanite = null;
+    
+    @GameRegistry.ObjectHolder("corium")
+    public static final BlockBRFluidCorium corium = null;
 }

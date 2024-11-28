@@ -1,6 +1,7 @@
 package erogenousbeef.bigreactors.init;
 
 import erogenousbeef.bigreactors.common.BigReactors;
+import erogenousbeef.bigreactors.common.block.BlockBRFluidCorium;
 import erogenousbeef.bigreactors.common.block.BlockBRGenericFluid;
 import erogenousbeef.bigreactors.common.block.BlockBRMetal;
 import erogenousbeef.bigreactors.common.block.BlockBROre;
@@ -72,6 +73,7 @@ public class ObjectsHandler extends GameObjectsHandler {
         registry.register(new BlockBRMetal("blockblutonium", "blockBlutonium"));
         registry.register(new BlockBRMetal("blockludicrite", "blockLudicrite"));
         registry.register(new BlockBRMetal("blocksteel", "blockSteel"));
+        registry.register(new BlockBRMetal("blockcorium", "blockCorium"));
 
         // Reactor parts
         registry.register(new BlockMultiblockCasing(PartType.ReactorCasing, "reactorcasing"));
@@ -111,6 +113,7 @@ public class ObjectsHandler extends GameObjectsHandler {
         // Fluid blocks
         registry.register(new BlockBRGenericFluid(BrFluids.fluidYellorium, "yellorium", new MaterialLiquid(MapColor.YELLOW)));
         registry.register(new BlockBRGenericFluid(BrFluids.fluidCyanite, "cyanite", Material.LAVA));
+        registry.register(new BlockBRFluidCorium());
     }
 
     @Override
@@ -301,6 +304,7 @@ public class ObjectsHandler extends GameObjectsHandler {
         this._blockReplacer.addReplacement(missingId, 3, BrBlocks.blockBlutonium);
         this._blockReplacer.addReplacement(missingId, 4, BrBlocks.blockLudicrite);
         this._blockReplacer.addReplacement(missingId, 5, BrBlocks.blockSteel);
+        this._blockReplacer.addReplacement(missingId, 6, BrBlocks.blockCorium);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -324,7 +328,8 @@ public class ObjectsHandler extends GameObjectsHandler {
         this._itemReplacer.addReplacement(missingId, 3, Item.getItemFromBlock(BrBlocks.blockBlutonium));
         this._itemReplacer.addReplacement(missingId, 4, Item.getItemFromBlock(BrBlocks.blockLudicrite));
         this._itemReplacer.addReplacement(missingId, 5, Item.getItemFromBlock(BrBlocks.blockSteel));
-
+        this._itemReplacer.addReplacement(missingId, 6, Item.getItemFromBlock(BrBlocks.blockCorium));
+        
         missingId = BigReactors.createResourceLocation("ingotmetals");
         this._itemReplacer.addReplacement(missingId, 0, BrItems.ingotYellorium);
         this._itemReplacer.addReplacement(missingId, 1, BrItems.ingotCyanite);

@@ -14,6 +14,7 @@ public class BrFluids {
     public static final Fluid fluidCyanite;
     public static final Fluid fluidSteam;
     public static final Fluid fluidFuelColumn;
+    public static final Fluid fluidCorium;
 
     public static void initialize() {
     }
@@ -123,5 +124,27 @@ public class BrFluids {
         }
 
         fluidFuelColumn = fluid;
+        
+     // - corium
+        if (null == (fluid = FluidRegistry.getFluid("corium"))) {
+
+            FluidRegistry.registerFluid(fluid = new ModFluid("corium",
+                    BigReactors.createBlockResourceLocation("coriumstill"),
+                    BigReactors.createBlockResourceLocation("coriumflowing")) {
+
+                @Override
+                protected void initialize() {
+
+                    this.setTemperature(300);
+                    this.setGaseous(false);
+                    this.setLuminosity(15);
+                    this.setRarity(EnumRarity.RARE);
+                    this.setDensity(100);
+                    this.setViscosity(2000);
+                }
+            });
+        }
+
+        FluidRegistry.addBucketForFluid(fluidCorium = fluid);
     }
 }

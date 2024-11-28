@@ -19,6 +19,7 @@ public class Config extends ConfigHandler {
     public int maxReactorHeight;
     public int maxReactorSize;
     public float reactorPowerProductionMultiplier;
+    public boolean doReactorMeltdown;
 
     // TURBINE
     public int maxTurbineHeight;
@@ -105,6 +106,7 @@ public class Config extends ConfigHandler {
         this.maxReactorHeight = this.getValue("maxReactorHeight", this.REACTOR, 48, "The maximum valid size of a reactor in the Y dimension, in blocks. Lower this if your server's players are building ginormous reactors. Bigger Y sizes have far less performance impact than X/Z sizes");
         this.maxReactorSize = this.getValue("maxReactorSize", this.REACTOR, 32, "The maximum valid size of a reactor in the X/Z plane, in blocks. Lower this if your server's players are building ginormous reactors");
         this.reactorPowerProductionMultiplier = this.getValue("reactorPowerProductionMultiplier", this.REACTOR, 1.0f, "A multiplier for balancing reactor power production. Stacks with powerProductionMultiplier. Default: 1.0");
+        this.doReactorMeltdown = this.getValue("doReactorMeltdown", this.REACTOR, false, "Weather or not reactors should meltdown. When reactors are overheated, they have a small but increasing chance to meltdown. Set to default so updating the mod doesn't make any servers look like New Year's. Default: false");
 
         // TURBINE
 
