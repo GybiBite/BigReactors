@@ -38,7 +38,7 @@ public class BlockBRFluidCorium extends BlockBRGenericFluid {
 
 	/*
 	 * If block is source block:
-	 *    Trigger 50/50 of solidifying
+	 *    Trigger 1:6 of solidifying
 	 *    Return
 	 *    
 	 * If block below *isn't* bedrock:
@@ -58,7 +58,7 @@ public class BlockBRFluidCorium extends BlockBRGenericFluid {
 		 final IBlockState HERE = worldIn.getBlockState(pos);
 		
 		if(HERE.equals(CORIUM_SOURCE)) {
-			if(rand.nextBoolean()) {
+			if(rand.nextInt(6) < 1) {
 				solidifyCorium(worldIn, pos);
 				return;
 			}

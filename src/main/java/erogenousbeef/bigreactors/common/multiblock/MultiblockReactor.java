@@ -19,6 +19,7 @@ import erogenousbeef.bigreactors.common.multiblock.interfaces.IActivateable;
 import erogenousbeef.bigreactors.common.multiblock.interfaces.ITickableMultiblockPart;
 import erogenousbeef.bigreactors.common.multiblock.tileentity.*;
 import erogenousbeef.bigreactors.init.BrBlocks;
+import erogenousbeef.bigreactors.init.BrFluids;
 import erogenousbeef.bigreactors.net.CommonPacketHandler;
 import erogenousbeef.bigreactors.net.message.multiblock.ReactorUpdateMessage;
 import erogenousbeef.bigreactors.net.message.multiblock.ReactorUpdateWasteEjectionMessage;
@@ -33,6 +34,7 @@ import it.zerono.mods.zerocore.api.multiblock.validation.ValidationError;
 import it.zerono.mods.zerocore.lib.IDebugMessages;
 import it.zerono.mods.zerocore.lib.IDebuggable;
 import it.zerono.mods.zerocore.lib.block.ModTileEntity;
+import it.zerono.mods.zerocore.lib.network.ModTileEntityMessage;
 import it.zerono.mods.zerocore.lib.world.WorldHelper;
 import it.zerono.mods.zerocore.util.CodeHelper;
 import it.zerono.mods.zerocore.util.ItemHelper;
@@ -46,6 +48,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -59,8 +62,11 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -78,6 +84,13 @@ public class MultiblockReactor extends RectangularMultiblockControllerBase imple
 	private float reactorHeat;
 	private float fuelHeat;
 	private WasteEjectionSetting wasteEjection;
+	
+	/**
+	 * How close the reactor is to a meltdown. This value starts at 0, and if
+	 * meltdowns are enabled, increases based on varying factors. If it reaches 100,
+	 * the reactor enters a melt down state
+	 */
+	private float meltdownFactor;
 
 	private PowerSystem _powerSystem;
 	private PartTier _partsTier;
@@ -585,6 +598,60 @@ public class MultiblockReactor extends RectangularMultiblockControllerBase imple
 		}
 
 		// TODO: Overload/overheat
+		
+		// Don't run any meltdown code unless config file says so
+		if (BigReactors.CONFIG.doReactorMeltdown) {
+			/* Count meltdown factor up if overheated, otherwise count back down */
+			if (fuelHeat > 1700) {
+				int fuelHeatMultiplier = (int) Math.floor((fuelHeat - 1700) / 100);
+
+				meltdownFactor += (0.1 * (1 + fuelHeatMultiplier));
+			} else {
+				meltdownFactor = Math.max(0, meltdownFactor -= 0.05);
+			}
+
+			if (meltdownFactor >= 100) {
+				/*
+				 * Now if the meltdown factor reaches 100...
+				 * 
+				 * Pick random numbers out of how many
+				 * control rods and fuel rods exist
+				 */
+				HashSet<BlockPos> meltedRodPos = new HashSet<BlockPos>();
+				HashSet<BlockPos> upperExplosionPos = new HashSet<BlockPos>();
+				long upperExplosions = Math.round(Math.random() * attachedControlRods.size());
+				long amountOfMeltedRods = Math.round(Math.random() * attachedFuelRods.size());
+				
+				// Pick some control rods until ran out of explosions to add
+				for(TileEntityReactorControlRod ctrlRod : attachedControlRods) {
+					if(upperExplosions > 0) {
+						upperExplosionPos.add(ctrlRod.getPos());
+						upperExplosions--;
+					}
+				}
+				
+				// Pick some fuel rods until ran out of corium to add
+				for(TileEntityReactorFuelRod fuelRod : attachedFuelRods) {
+					if(amountOfMeltedRods > 0) {
+						meltedRodPos.add(fuelRod.getPos());
+//						meltedRodPos.add(fuelRod.getPos().down());
+						amountOfMeltedRods--;
+					}
+				}
+				
+				for(BlockPos boomPos : upperExplosionPos) {
+					Explosion expl = WORLD.newExplosion(null, boomPos.getX(), boomPos.getY(), boomPos.getZ(), 4, true, true);
+					expl.doExplosionB(true);
+					for(BlockPos pos : expl.getAffectedBlockPositions()) {
+						WORLD.setBlockToAir(pos);
+					}
+				}
+				
+				for(BlockPos fluidPos : meltedRodPos) {
+					WORLD.setBlockState(fluidPos, BrFluids.fluidCorium.getBlock().getDefaultState());
+				}
+			}
+		}
 
 		this.WORLD.profiler.endStartSection("Tickables");
 
