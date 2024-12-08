@@ -29,6 +29,7 @@ public class Config extends ConfigHandler {
     public double turbineFluidPerBladeMultiplier;
     public float turbineMassDragMultiplier;
     public float turbinePowerProductionMultiplier;
+    public boolean doTurbineOverspeed;
 
     // COMPATIBILITY
     public boolean autoAddUranium;
@@ -117,7 +118,8 @@ public class Config extends ConfigHandler {
         this.turbineFluidPerBladeMultiplier = this.getValue("turbineFluidPerBladeMultiplier", this.TURBINE, 1.0, "A multiplier for balancing coil size. Multiplies the amount of fluid each blade block can process (base of 25 will be multiplied, then rounded down to the nearest integer). Default: 1.0");
         this.turbineMassDragMultiplier = this.getValue("turbineMassDragMultiplier", this.TURBINE, 1.0f, "A multiplier for balancing rotor sizes. Multiplies the amount of energy lost to friction per tick. Default: 1.0");
         this.turbinePowerProductionMultiplier = this.getValue("turbinePowerProductionMultiplier", this.TURBINE, 1.0f, "A multiplier for balancing turbine power production. Stacks with powerProductionMultiplier. Default: 1.0");
-
+        this.doTurbineOverspeed = this.getValue("doTurbineOverspeed", this.TURBINE, false, "Whether or not turbines will explode when they spin too fast. Default: false");
+        
         // COMPATIBILITY
 
         this.autoAddUranium = this.getValue("autoAddUranium", this.COMPATIBILITY, true, "If true, automatically adds all unregistered uranium ingots found as clonesof standard yellorium fuel");

@@ -39,6 +39,7 @@ import it.zerono.mods.zerocore.lib.world.WorldHelper;
 import it.zerono.mods.zerocore.util.CodeHelper;
 import it.zerono.mods.zerocore.util.ItemHelper;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -600,7 +601,7 @@ public class MultiblockReactor extends RectangularMultiblockControllerBase imple
 		// TODO: Overload/overheat
 		
 		// Don't run any meltdown code unless config file says so
-		if (BigReactors.CONFIG.doReactorMeltdown) {
+		if (BigReactors.CONFIG.doReactorMeltdown && !WORLD.isRemote) {
 			/* Count meltdown factor up if overheated, otherwise count back down */
 			if (fuelHeat > 1700) {
 				int fuelHeatMultiplier = (int) Math.floor((fuelHeat - 1700) / 100);
@@ -639,12 +640,10 @@ public class MultiblockReactor extends RectangularMultiblockControllerBase imple
 					}
 				}
 				
-				for(BlockPos boomPos : upperExplosionPos) {
-					Explosion expl = WORLD.newExplosion(null, boomPos.getX(), boomPos.getY(), boomPos.getZ(), 4, true, true);
+				for(BlockPos boom : upperExplosionPos) {
+					Explosion expl = WORLD.newExplosion(null, boom.getX(), boom.getY(), boom.getZ(), 4, true, true);
+					expl.doExplosionA();
 					expl.doExplosionB(true);
-					for(BlockPos pos : expl.getAffectedBlockPositions()) {
-						WORLD.setBlockToAir(pos);
-					}
 				}
 				
 				for(BlockPos fluidPos : meltedRodPos) {

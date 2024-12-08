@@ -37,6 +37,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -835,6 +836,20 @@ public class MultiblockTurbine extends RectangularMultiblockControllerBase imple
 
 		if(energyAvailable != energyRemaining) {
 			reduceStoredEnergy((energyAvailable - energyRemaining));
+		}
+		
+		// explode if overspeed
+		
+		if(this.getRotorSpeed() > 2000) {
+			for(TileEntityTurbineRotorBearing bearing : this.attachedRotorBearings) {
+				double bearingX = bearing.getWorldPosition().getX();
+				double bearingY = bearing.getWorldPosition().getY();
+				double bearingZ = bearing.getWorldPosition().getZ();
+				
+				Explosion expl = WORLD.newExplosion(null, bearingX, bearingY, bearingZ, 2, false, true);
+				expl.doExplosionA();
+				expl.doExplosionB(true);
+			}
 		}
 
 		this.WORLD.profiler.endStartSection("Tickables");
