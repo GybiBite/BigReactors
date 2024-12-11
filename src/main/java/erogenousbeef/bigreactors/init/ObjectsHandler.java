@@ -4,6 +4,7 @@ import erogenousbeef.bigreactors.common.BigReactors;
 import erogenousbeef.bigreactors.common.block.BlockBRFluidCorium;
 import erogenousbeef.bigreactors.common.block.BlockBRGenericFluid;
 import erogenousbeef.bigreactors.common.block.BlockBRMetal;
+import erogenousbeef.bigreactors.common.block.BlockBRMetalCorium;
 import erogenousbeef.bigreactors.common.block.BlockBROre;
 import erogenousbeef.bigreactors.common.item.ItemGeneric;
 import erogenousbeef.bigreactors.common.item.ItemWrench;
@@ -73,7 +74,7 @@ public class ObjectsHandler extends GameObjectsHandler {
         registry.register(new BlockBRMetal("blockblutonium", "blockBlutonium"));
         registry.register(new BlockBRMetal("blockludicrite", "blockLudicrite"));
         registry.register(new BlockBRMetal("blocksteel", "blockSteel"));
-        registry.register(new BlockBRMetal("blockcorium", "blockCorium"));
+        registry.register(new BlockBRMetalCorium("blockcorium", "blockCorium"));
 
         // Reactor parts
         registry.register(new BlockMultiblockCasing(PartType.ReactorCasing, "reactorcasing"));

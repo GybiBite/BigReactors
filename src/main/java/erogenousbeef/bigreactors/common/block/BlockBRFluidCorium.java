@@ -1,5 +1,6 @@
 package erogenousbeef.bigreactors.common.block;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import javax.annotation.Nonnull;
@@ -8,6 +9,8 @@ import erogenousbeef.bigreactors.init.BrBlocks;
 import erogenousbeef.bigreactors.init.BrFluids;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -18,32 +21,27 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.IUnlistedProperty;
 
 public class BlockBRFluidCorium extends BlockBRGenericFluid {
 	
 	/**
-	 * Amount of ticks before Corium can solidify
+	 * Amount of random ticks to ignore before the fluid can solidify
 	 */
-	final static long solidifyGracePeriod = 600;
+	public static final PropertyInteger SOLID_TIMER = PropertyInteger.create("antisolidify", 0, 100);
 	
 	/**
-	 * When the fluid block was placed in the world
+	 * All blocks in this list will not be melted/eaten by Corium fluid
 	 */
-	long timePlaced;
-
+	public static final ArrayList<Block> BLOCK_WHITELIST = new ArrayList<Block>();
+	
 	public BlockBRFluidCorium() {
 		super(BrFluids.fluidCorium, "corium", Material.LAVA);
 		this.setQuantaPerBlock(4);
 		this.setTickRandomly(true);
+		this.setDefaultState(this.blockState.getBaseState().withProperty(LEVEL, 0).withProperty(SOLID_TIMER, 4));
 	}
 	
-	@Override
-	public void onBlockAdded(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state) {
-		timePlaced = world.getTotalWorldTime();
-		
-		super.onBlockAdded(world, pos, state);
-	}
-
 	// Give mobs/players touching Corium Wither and Glowing, while damaging them
 	@Override
 	public void onEntityCollision(World world, BlockPos blockPos, IBlockState blockState, Entity entity) {
@@ -55,34 +53,22 @@ public class BlockBRFluidCorium extends BlockBRGenericFluid {
 		}
 	}
 
-	/*
-	 * If block is source block: Trigger 1:6 of solidifying Return
-	 * 
-	 * If block below *isn't* bedrock: Set block below to air
-	 * 
-	 * Hopefully no exploit from other mods with really hard blocks that aren't
-	 * supposed to be broken easily? There probably are but that isn't my problem
-	 */
 	@Override
 	public void randomTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
-
-		final IBlockState CORIUM_SOURCE = BrFluids.fluidCorium.getBlock().getDefaultState();
-		final IBlockState BEDROCK = Blocks.BEDROCK.getDefaultState();
-		final IBlockState CORIUM = BrBlocks.blockCorium.getDefaultState();
-
-		final IBlockState UNDER = worldIn.getBlockState(pos.down());
-		final IBlockState HERE = worldIn.getBlockState(pos);
-
-		if (HERE.equals(CORIUM_SOURCE) && worldIn.getTotalWorldTime() - timePlaced > solidifyGracePeriod) {
-			if (rand.nextInt(6) < 1) {
-				solidifyCorium(worldIn, pos);
-				return;
+		if (worldIn.getBlockState(pos).getValue(LEVEL) == 0) {
+			if (state.getValue(SOLID_TIMER) == 0) {
+				if (rand.nextInt(4) < 1) {
+					solidifyCorium(worldIn, pos);
+					return;
+				}
+			}
+			else {
+				worldIn.setBlockState(pos, state.withProperty(SOLID_TIMER, state.getValue(SOLID_TIMER) - 1), 0);
 			}
 		}
 
-		if (!UNDER.equals(BEDROCK) || !UNDER.getBlock().equals(BrFluids.fluidCorium.getBlock())
-				|| !UNDER.equals(CORIUM)) {
-			System.out.println("Setting block " + worldIn.getBlockState(pos.down()));
+		// Don't eat whitelisted blocks
+		if (!BLOCK_WHITELIST.contains(worldIn.getBlockState(pos.down()).getBlock())) {
 			worldIn.setBlockToAir(pos.down());
 		}
 	}
@@ -101,13 +87,29 @@ public class BlockBRFluidCorium extends BlockBRGenericFluid {
 	@Override
 	public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
 		final Block UNDER = worldIn.getBlockState(pos.down()).getBlock();
-
+		
 		if (UNDER.equals(Blocks.AIR)) {
 			worldIn.setBlockState(pos.down(), state);
 			worldIn.setBlockToAir(pos);
 		}
-
+		
 		super.updateTick(worldIn, pos, state, rand);
 	}
-
+	
+	// Fine, I'll have my own block state! With blackjack and timers!
+	@Override
+    @Nonnull
+    protected BlockStateContainer createBlockState()
+    {
+        return new BlockStateContainer.Builder(this)
+                .add(LEVEL)
+                .add(FLUID_RENDER_PROPS.toArray(new IUnlistedProperty<?>[0]))
+                .add(SOLID_TIMER)
+                .build();
+    }
+	
+	static {
+		BLOCK_WHITELIST.add(Blocks.BEDROCK);
+		BLOCK_WHITELIST.add(BrFluids.fluidCorium.getBlock());
+	}
 }
